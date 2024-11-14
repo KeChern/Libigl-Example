@@ -28,7 +28,7 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &minPt, const Eigen::Vecto
 
 Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &sizeVec) {
     std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> trilist;
+    std::vector<Eigen::Vector3i> facelist;
 
     /// 1. Compute vertices of the cuboid
     double minX = -0.5f * sizeVec[0];
@@ -50,23 +50,23 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &sizeVec) {
     verlist.emplace_back(minX, maxY, minZ);
 
     /// 2. Compute triangles of the cuboid
-    trilist.emplace_back(5, 4, 7);
-    trilist.emplace_back(5, 7, 6);
-    trilist.emplace_back(7, 2, 6);
-    trilist.emplace_back(7, 3, 2);
+    facelist.emplace_back(5, 4, 7);
+    facelist.emplace_back(5, 7, 6);
+    facelist.emplace_back(7, 2, 6);
+    facelist.emplace_back(7, 3, 2);
 
-    trilist.emplace_back(1, 0, 4);
-    trilist.emplace_back(1, 3, 0);
-    trilist.emplace_back(5, 6, 2);
-    trilist.emplace_back(5, 2, 1);
+    facelist.emplace_back(1, 0, 4);
+    facelist.emplace_back(1, 3, 0);
+    facelist.emplace_back(5, 6, 2);
+    facelist.emplace_back(5, 2, 1);
 
-    trilist.emplace_back(4, 5, 1);
-    trilist.emplace_back(1, 2, 3);
-    trilist.emplace_back(0, 3, 4);
-    trilist.emplace_back(4, 3, 7);
+    facelist.emplace_back(4, 5, 1);
+    facelist.emplace_back(1, 2, 3);
+    facelist.emplace_back(0, 3, 4);
+    facelist.emplace_back(4, 3, 7);
 
     /// 3. Construct a triangular mesh
-    Mesh *mesh = new Mesh(verlist, trilist);
+    Mesh *mesh = new Mesh(verlist, facelist);
     return mesh;
 }
 
@@ -95,7 +95,7 @@ Mesh *MeshCreator::CreateCylinder(const Eigen::Vector3d &capCenterA, const Eigen
 
 Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
     std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> trilist;
+    std::vector<Eigen::Vector3i> facelist;
 
     /// 1. Computer vertices of the cylinder
 
@@ -133,14 +133,14 @@ Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
         int j1 = (i + 1) % radSamp;
         int i2 = i + radSamp;
         int j2 = j1 + radSamp;
-        trilist.emplace_back(i1, j2, j1);
-        trilist.emplace_back(i2, j2, i1);
-        trilist.emplace_back(i1, j1, 2 * radSamp);
-        trilist.emplace_back(j2, i2, 2 * radSamp + 1);
+        facelist.emplace_back(i1, j2, j1);
+        facelist.emplace_back(i2, j2, i1);
+        facelist.emplace_back(i1, j1, 2 * radSamp);
+        facelist.emplace_back(j2, i2, 2 * radSamp + 1);
     }
 
     /// 3. Construct a triangular mesh of the cylinder
-    Mesh *mesh = new Mesh(verlist, trilist);
+    Mesh *mesh = new Mesh(verlist, facelist);
     return mesh;
 }
 
@@ -152,7 +152,7 @@ Mesh *MeshCreator::CreateSphere(const Eigen::Vector3d &center, double radius, in
 
 Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
     std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> trilist;
+    std::vector<Eigen::Vector3i> facelist;
 
     int polarSamp = radSamp / 2;
     int azimuSamp = radSamp;
@@ -174,11 +174,11 @@ Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
     verlist.emplace_back(0, 0, -radius);
 
     /// 2. Compute triangles of the sphere
-    trilist.reserve(polarSamp * azimuSamp * 2);
+    facelist.reserve(polarSamp * azimuSamp * 2);
 
     /// Top ring of triangles
     for (int j = 0; j < azimuSamp; j++) {
-        trilist.emplace_back(midNum, j, (j + 1) % azimuSamp);
+        facelist.emplace_back(midNum, j, (j + 1) % azimuSamp);
     }
 
     /// Middle rings of triangles
@@ -188,18 +188,18 @@ Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
             int j1 = (i - 1) * azimuSamp + (j + 1) % azimuSamp;
             int i2 = i * azimuSamp + j;
             int j2 = i * azimuSamp + (j + 1) % azimuSamp;
-            trilist.emplace_back(i1, i2, j1);
-            trilist.emplace_back(i2, j2, j1);
+            facelist.emplace_back(i1, i2, j1);
+            facelist.emplace_back(i2, j2, j1);
         }
     }
 
     /// Bottom ring of triangles
     for (int j = 0; j < azimuSamp; j++) {
-        trilist.emplace_back(midNum + 1, midNum - azimuSamp + (j + 1) % azimuSamp, midNum - azimuSamp + j);
+        facelist.emplace_back(midNum + 1, midNum - azimuSamp + (j + 1) % azimuSamp, midNum - azimuSamp + j);
     }
 
     /// 3. Construct a triangular mesh of the sphere
-    Mesh *mesh = new Mesh(verlist, trilist);
+    Mesh *mesh = new Mesh(verlist, facelist);
     return mesh;
 }
 
@@ -225,7 +225,7 @@ Mesh *MeshCreator::CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Ve
 Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
     /// Create a cone that is oriented along the +x-axis; its base is centered at the origin
     std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> trilist;
+    std::vector<Eigen::Vector3i> facelist;
 
     /// 1. Compute vertices of the cone
     verlist.reserve(radSamp + 2);
@@ -244,14 +244,14 @@ Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
     verlist.emplace_back(length, 0, 0);
 
     /// 2. Compute triangles of the cone
-    trilist.reserve(2 * radSamp);
+    facelist.reserve(2 * radSamp);
     /// Triangles of the base
     for (int j = 0; j < radSamp; j++) {
-        trilist.emplace_back(radSamp, (j + 1) % radSamp, j);
-        trilist.emplace_back(radSamp + 1, j, (j + 1) % radSamp);
+        facelist.emplace_back(radSamp, (j + 1) % radSamp, j);
+        facelist.emplace_back(radSamp + 1, j, (j + 1) % radSamp);
     }
 
     /// 3. Construct a triangular mesh of the cylinder
-    Mesh *mesh = new Mesh(verlist, trilist);
+    Mesh *mesh = new Mesh(verlist, facelist);
     return mesh;
 }

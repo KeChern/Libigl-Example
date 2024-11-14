@@ -14,10 +14,10 @@
 
 Mesh::Mesh(const Eigen::MatrixXd &_verM, const Eigen::MatrixXi &_triM) {
     verM = _verM;
-    triM = _triM;
+    faceM = _triM;
 }
 
-Mesh::Mesh(const std::vector<Eigen::Vector3d> &verlist, const std::vector<Eigen::Vector3i> &trilist) {
+Mesh::Mesh(const std::vector<Eigen::Vector3d> &verlist, const std::vector<Eigen::Vector3i> &facelist) {
     verM.resize(static_cast<int>(verlist.size()), 3);
     for (int i = 0; i < verlist.size(); i++) {
         verM(i, 0) = verlist[i].x();
@@ -25,11 +25,11 @@ Mesh::Mesh(const std::vector<Eigen::Vector3d> &verlist, const std::vector<Eigen:
         verM(i, 2) = verlist[i].z();
     }
 
-    triM.resize(static_cast<int>(trilist.size()), 3);
-    for (int i = 0; i < trilist.size(); i++) {
-        triM(i, 0) = trilist[i].x();
-        triM(i, 1) = trilist[i].y();
-        triM(i, 2) = trilist[i].z();
+    faceM.resize(static_cast<int>(facelist.size()), 3);
+    for (int i = 0; i < facelist.size(); i++) {
+        faceM(i, 0) = facelist[i].x();
+        faceM(i, 1) = facelist[i].y();
+        faceM(i, 2) = facelist[i].z();
     }
 }
 
@@ -46,25 +46,25 @@ Mesh::Mesh(const std::vector<Eigen::Vector3d> &verlist, int rows, int cols) {
     if (rows < 2 || cols < 2)
         std::cout << "rows/cols is less than 2!" << std::endl;
 
-    std::vector<Eigen::Vector3i> trilist;
+    std::vector<Eigen::Vector3i> facelist;
 
     for (int i = 0; i < rows - 1; i++) {
         for (int j = 0; j < cols - 1; j++) {
             int id = i * cols + j;
-            trilist.emplace_back(id, id + cols, id + 1);
-            trilist.emplace_back(id + 1, id + cols, id + cols + 1);
+            facelist.emplace_back(id, id + cols, id + 1);
+            facelist.emplace_back(id + 1, id + cols, id + cols + 1);
         }
     }
-    triM.resize(static_cast<int>(trilist.size()), 3);
-    for (int i = 0; i < trilist.size(); i++) {
-        triM(i, 0) = trilist[i].x();
-        triM(i, 1) = trilist[i].y();
-        triM(i, 2) = trilist[i].z();
+    faceM.resize(static_cast<int>(facelist.size()), 3);
+    for (int i = 0; i < facelist.size(); i++) {
+        faceM(i, 0) = facelist[i].x();
+        faceM(i, 1) = facelist[i].y();
+        faceM(i, 2) = facelist[i].z();
     }
 }
 
 Mesh::Mesh(const std::string &filename){
-    igl::readOBJ(filename, verM, triM);
+    igl::readOBJ(filename, verM, faceM);
 }
 
 void Mesh::VerList2VerMat(const std::vector<Eigen::Vector3d> &verlist) {
@@ -76,19 +76,19 @@ void Mesh::VerList2VerMat(const std::vector<Eigen::Vector3d> &verlist) {
     }
 }
 
-void Mesh::TriList2TriMat(const std::vector<Eigen::Vector3i> &trilist) {
-    triM.resize(static_cast<int>(trilist.size()), 3);
-    for (int i = 0; i < trilist.size(); i++) {
-        triM(i, 0) = trilist[i].x();
-        triM(i, 1) = trilist[i].y();
-        triM(i, 2) = trilist[i].z();
+void Mesh::FaceList2FaceMat(const std::vector<Eigen::Vector3i> &facelist) {
+    faceM.resize(static_cast<int>(facelist.size()), 3);
+    for (int i = 0; i < facelist.size(); i++) {
+        faceM(i, 0) = facelist[i].x();
+        faceM(i, 1) = facelist[i].y();
+        faceM(i, 2) = facelist[i].z();
     }
 }
 
-void Mesh::TriMat2TriList(std::vector<Eigen::Vector3i> &trilist) {
-    trilist.resize(triM.rows());
-    for (int i = 0; i < triM.rows(); i++) {
-        trilist[i] << triM(i, 0), triM(i, 1), triM(i, 2);
+void Mesh::FaceMat2FaceList(std::vector<Eigen::Vector3i> &facelist) {
+    facelist.resize(faceM.rows());
+    for (int i = 0; i < faceM.rows(); i++) {
+        facelist[i] << faceM(i, 0), faceM(i, 1), faceM(i, 2);
     }
 }
 
@@ -98,15 +98,6 @@ void Mesh::VerMat2VerList(std::vector<Eigen::Vector3d> &verlist) {
         verlist[i] << verM(i, 0), verM(i, 1), verM(i, 2);
     }
 }
-
-//void Mesh::RestoreNormal() {
-//    norM.resize(static_cast<int>(triangles.size()), 3);
-//    for (int i = 0; i < triangles.size(); i++) {
-//        norM(i, 0) = triangles[i]->normal.x();
-//        norM(i, 1) = triangles[i]->normal.y();
-//        norM(i, 2) = triangles[i]->normal.z();
-//    }
-//}
 
 /// ========================================
 ///             Mesh Operation
@@ -146,7 +137,7 @@ void Mesh::Transform(const Eigen::Affine3d &mat, Eigen::MatrixX3d &new_verM) {
 /// ========================================
 
 void Mesh::SaveAsOBJ(const std::string &filename) {
-    igl::writeOBJ("../data/" + filename, verM, triM);
+    igl::writeOBJ("../data/" + filename, verM, faceM);
 }
 
 /// ========================================
@@ -157,10 +148,10 @@ double Mesh::ComputeVolume() {
     Eigen::RowVector3d origin, v0, v1, v2;
     origin = Eigen::RowVector3d::Zero();
     double volume = 0;
-    for (int i = 0; i < triM.rows(); i++) {
-        v0 = verM.row(triM(i, 0));
-        v1 = verM.row(triM(i, 1));
-        v2 = verM.row(triM(i, 2));
+    for (int i = 0; i < faceM.rows(); i++) {
+        v0 = verM.row(faceM(i, 0));
+        v1 = verM.row(faceM(i, 1));
+        v2 = verM.row(faceM(i, 2));
         volume += (origin - v2).dot((v1 - v2).cross(v0 - v2));
     }
     volume /= 6.0f;

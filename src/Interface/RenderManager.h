@@ -15,11 +15,14 @@
 
 #include <igl/opengl/glfw/Viewer.h>
 
+#include "Mesh/MeshCreator.h"
+
+
 class RenderManager {
 public:
-    size_t ModelNum;
-    size_t GroundNum;
-    size_t AxesNum;
+    int ModelNum = 0;
+    int GroundNum = 0;
+    int AxesNum = 0;
 
 public:
     RenderManager() = default;
@@ -38,16 +41,11 @@ public:
 //    void DrawMeshForDebug(iglViewer &viewer);
 
     /// Show/hide Objects
-    void ShowModel(igl::opengl::glfw::Viewer &viewer, bool is_visible);
-    void ShowGround(igl::opengl::glfw::Viewer &viewer, bool is_visible);
-    void ShowAxes(igl::opengl::glfw::Viewer &viewer, bool is_visible);
+    void ShowModel(igl::opengl::glfw::Viewer &viewer, bool is_visible) const;
+    void ShowGround(igl::opengl::glfw::Viewer &viewer, bool is_visible) const;
+    void ShowAxes(igl::opengl::glfw::Viewer &viewer, bool is_visible) const;
 
 //    void ShowInCurve(iglViewer &viewer, bool isVisible);
-
-
-
-    /// Utility
-    static void AppendDataToViewer(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist);
 };
 
 

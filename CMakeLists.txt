@@ -16,7 +16,7 @@ igl_include(imgui)
 #igl_include(stb)
 #igl_include(predicates)
 #igl_include(xml)
-#igl_include(copyleft cgal)
+igl_include(copyleft cgal)
 #igl_include(copyleft comiso)
 #igl_include(copyleft core)
 #igl_include(copyleft cork)
@@ -27,17 +27,17 @@ igl_include(imgui)
 
 #########################################
 #####                               #####
-#####             Core              #####
+#####             Mesh              #####
 #####                               #####
 #########################################
-file(GLOB CoreFiles
+file(GLOB MeshFiles
         src/Mesh/*.h
         src/Mesh/*.cpp
         src/Utility/*.h
         src/Utility/*.cpp)
-add_library(CoreLib STATIC ${CoreFiles})
-target_include_directories(CoreLib PUBLIC ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(CoreLib PUBLIC igl::glfw)
+add_library(MeshLib STATIC ${MeshFiles})
+target_include_directories(MeshLib PUBLIC ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(MeshLib PUBLIC igl::glfw igl_copyleft::cgal)
 
 #########################################
 #####                               #####
@@ -48,6 +48,7 @@ file(GLOB InterfaceFiles
         src/Interface/*.h
         src/Interface/*.cpp)
 add_library(InterfaceLib STATIC ${InterfaceFiles})
+target_include_directories(InterfaceLib PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(InterfaceLib PUBLIC igl::imgui)
 
 #########################################
@@ -59,13 +60,13 @@ add_executable(${PROJECT_NAME} src/MainFunc/main.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(${PROJECT_NAME} PUBLIC
         # ours
-        CoreLib
+        MeshLib
         InterfaceLib
 
         # igl
-        igl::glfw
+        # igl::glfw
         # igl::embree
-        igl::imgui
+        # igl::imgui
         # igl::opengl
         # igl::stb
         # igl::predicates

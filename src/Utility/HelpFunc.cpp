@@ -12,6 +12,13 @@
 
 #include "HelpFunc.h"
 
+double GetRandomDouble(double a, double b) {
+    static std::mt19937 gen(rand());
+    std::uniform_real_distribution<double> distribution(a, b);
+    return distribution(gen);
+}
+
+
 Eigen::Affine3d GetTranslationMatrix(const Eigen::Vector3d &transVec) {
     Eigen::Affine3d affineMat = Eigen::Affine3d::Identity();
     affineMat.translation() = transVec;
@@ -26,7 +33,8 @@ Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d 
     return affineMat;
 }
 
-Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis, const Eigen::Vector3d &rotCenter) {
+Eigen::Affine3d
+GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis, const Eigen::Vector3d &rotCenter) {
     return GetTranslationMatrix(rotCenter) * GetRotationMatrix(rotAngle, rotAxis) * GetTranslationMatrix(-rotCenter);
 }
 
@@ -61,10 +69,49 @@ Eigen::Affine3d GetScalingMatrix(const Eigen::Vector3d &scaleVec) {
     return affineMat;
 }
 
+Eigen::Affine3d GetScalingMatrix(double scale) {
+    return GetScalingMatrix(Eigen::Vector3d::Ones() * scale);
+}
+
 Eigen::Vector3d MultiplyPoint(const Eigen::Affine3d &mat, const Eigen::Vector3d &point) {
     return mat * point;
 }
 
 Eigen::Vector3d MultiplyVector(const Eigen::Affine3d &mat, const Eigen::Vector3d &vec) {
     return mat.linear() * vec;
+}
+
+Eigen::RowVector3d GetRGB(const std::string &colorName) {
+    static const std::unordered_map<std::string, Eigen::Vector3d> colorMap = {
+            {"red",          Eigen::RowVector3d(0.9, 0.4, 0.4)},
+            {"orange",       Eigen::RowVector3d(0.9, 0.6, 0.4)},
+            {"yellow",       Eigen::RowVector3d(0.9, 0.9, 0.5)},
+            {"green",        Eigen::RowVector3d(0.4, 0.9, 0.4)},
+            {"cyan",         Eigen::RowVector3d(0.4, 0.9, 0.9)},
+            {"blue",         Eigen::RowVector3d(0.4, 0.4, 0.9)},
+            {"purple",       Eigen::RowVector3d(0.7, 0.3, 0.9)},
+            {"pink",         Eigen::RowVector3d(0.5, 0.2, 0.5)},
+            {"blown",        Eigen::RowVector3d(0.4, 0.8, 0.7)},
+            {"gray",         Eigen::RowVector3d(0.6, 0.6, 0.6)},
+
+            {"light blue",   Eigen::RowVector3d(0.6, 0.6, 0.9)},
+            {"light gray",   Eigen::RowVector3d(0.8, 0.8, 0.8)},
+            {"light salmon", Eigen::RowVector3d(0.9, 0.6, 0.5)},
+
+            {"dark purple",  Eigen::RowVector3d(0.0, 0.0, 0.0)},
+            {"dark cyan",    Eigen::RowVector3d(0.0, 0.0, 0.0)},
+            {"dark blue",    Eigen::RowVector3d(0.0, 0.0, 0.0)},
+            {"dark yellow",  Eigen::RowVector3d(0.0, 0.0, 0.0)},
+
+            {"black",        Eigen::RowVector3d(0.3, 0.4, 0.7)},
+            {"white",        Eigen::RowVector3d(0.6, 0.6, 0.3)}
+    };
+
+    auto it = colorMap.find(colorName);
+    if (it != colorMap.end()) {
+        return it->second;
+    } else {
+        std::cout << "Unknown color name: " << colorName << std::endl;
+        return {0.0, 0.0, 0.0};
+    }
 }
