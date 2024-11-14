@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     HelpFunc.h
+///     HelpFunc.cpp
 ///
 ///     Common Functions
 ///

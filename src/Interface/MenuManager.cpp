@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     MenuManager.h
+///     MenuManager.cpp
 ///
 ///     User interface setting by libigl
 ///

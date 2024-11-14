@@ -15,7 +15,6 @@
 
 #include "Mesh/Mesh.h"
 
-
 class MeshCreator {
 public:
     MeshCreator() = default;
@@ -33,10 +32,9 @@ public:
     static Mesh* CreateSphere(const Eigen::Vector3d &center, double radius, int radSamp);
     static Mesh* CreateSphere(double radius, int radSamp);
 
-//    /// Cone
-//    Mesh* CreateCone(Eigen::Vector3d baseCenter, Eigen::Vector3d apexPoint, double radius, int radSamp);
-//    Mesh* CreateCone(double length, double radius, int radSamp);
-//    Mesh* CreateCone(Eigen::Vector3d apexPoint, Eigen::Vector3d axis_n, double height, double rangeAngle, int radSamp);
+    /// Cone
+    static Mesh* CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Vector3d &apexPoint, double radius, int radSamp);
+    static Mesh* CreateCone(double length, double radius, int radSamp);
 };
 
 

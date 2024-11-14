@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     RenderManager.h
+///     RenderManager.cpp
 ///
 ///     Rendering 3D contents by libigl
 ///

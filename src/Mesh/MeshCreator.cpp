@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     MeshCreator.h
+///     MeshCreator.cpp
 ///
 ///     Create some common meshes
 ///
@@ -146,8 +146,7 @@ Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
 
 Mesh *MeshCreator::CreateSphere(const Eigen::Vector3d &center, double radius, int radSamp) {
     Mesh *mesh = CreateSphere(radius, radSamp);
-    Eigen::Affine3d mat = GetTranslationMatrix(center);
-    mesh->Transform(mat);
+    mesh->Transform(GetTranslationMatrix(center));
     return mesh;
 }
 
@@ -200,6 +199,59 @@ Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
     }
 
     /// 3. Construct a triangular mesh of the sphere
+    Mesh *mesh = new Mesh(verlist, trilist);
+    return mesh;
+}
+
+Mesh *MeshCreator::CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Vector3d &apexPoint, double radius,
+                              int radSamp) {
+    /// 1. Create a cylinder with the given radius and computed length
+    double length = (apexPoint - baseCenter).norm();
+    Mesh *mesh = CreateCone(length, radius, radSamp);
+
+    /// 2. Compute the translation matrix
+    Eigen::Affine3d transMat = GetTranslationMatrix(baseCenter);
+
+    /// 3. Compute the rotation matrix (note: default cylinder is aligned with x-axis)
+    Eigen::Vector3d xAxis = {1, 0, 0};
+    Eigen::Vector3d axis_n = (apexPoint - baseCenter).normalized();
+    Eigen::Affine3d rotMat = GetRotationMatrix(xAxis, axis_n);
+
+    /// 4. Transform the cylinder to its target position and orientation
+    mesh->Transform(transMat * rotMat);
+    return mesh;
+}
+
+Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
+    /// Create a cone that is oriented along the +x-axis; its base is centered at the origin
+    std::vector<Eigen::Vector3d> verlist;
+    std::vector<Eigen::Vector3i> trilist;
+
+    /// 1. Compute vertices of the cone
+    verlist.reserve(radSamp + 2);
+
+    /// Sampled points on the base
+    for (int i = 0; i < radSamp; i++) {
+        double beta = i * 2.0 * M_PI / radSamp;
+        double x = 0;
+        double y = radius * cos(beta);
+        double z = radius * sin(beta);
+        verlist.emplace_back(x, y, z);
+    }
+    /// Base center point
+    verlist.emplace_back(0, 0, 0);
+    /// Apex point
+    verlist.emplace_back(length, 0, 0);
+
+    /// 2. Compute triangles of the cone
+    trilist.reserve(2 * radSamp);
+    /// Triangles of the base
+    for (int j = 0; j < radSamp; j++) {
+        trilist.emplace_back(radSamp, (j + 1) % radSamp, j);
+        trilist.emplace_back(radSamp + 1, j, (j + 1) % radSamp);
+    }
+
+    /// 3. Construct a triangular mesh of the cylinder
     Mesh *mesh = new Mesh(verlist, trilist);
     return mesh;
 }

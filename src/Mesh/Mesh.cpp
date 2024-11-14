@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     Mesh.h
+///     Mesh.cpp
 ///
 ///     Mesh data structure in libigl
 ///

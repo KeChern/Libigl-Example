@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     HelpStruct.h
+///     HelpStruct.cpp
 ///
 ///     Common Structures
 ///

@@ -40,12 +40,14 @@ int main(int argc, char *argv[]) {
     renderMgr.InitViewer(viewer);
 
 
-    MeshCreator meshCreator;
-//    Mesh *cuboid = meshCreator.CreateCuboid(Eigen::Vector3d(2, 3, 4));
+//    MeshCreator meshCreator;
+    Mesh *cuboid = MeshCreator::CreateCuboid(Eigen::Vector3d(2, 3, 4));
     Mesh *bunny = new Mesh("../data/bunny.obj");
     bunny = MeshCreator::CreateCylinder(2, 0.5, 200);
     bunny = MeshCreator::CreateCylinder(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 6);
     bunny = MeshCreator::CreateSphere(Eigen::Vector3d(1, 1, 1), 1, 20);
+    bunny = MeshCreator::CreateCone(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 100);
+
 
 
     std::vector<igl::opengl::ViewerData> DataList;
