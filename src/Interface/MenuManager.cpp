@@ -1,8 +1,8 @@
 /// ========================================
 ///
-///     Menu.h
+///     MenuManager.h
 ///
-///     Making user interface by libigl
+///     User interface setting by libigl
 ///
 ///     by Yingjie Cheng and Yucheng Sun
 ///
@@ -10,9 +10,9 @@
 ///
 /// ========================================
 
-#include "Menu.h"
+#include "MenuManager.h"
 
-void InitMenu(igl::opengl::glfw::Viewer &viewer, igl::opengl::glfw::imgui::ImGuiMenu &menu) {
+void MenuManager::InitMenu(igl::opengl::glfw::Viewer &viewer, igl::opengl::glfw::imgui::ImGuiMenu &menu) {
     menu.callback_draw_viewer_window = [&]() {
         /// Color Preset
         ImGui::GetStyle().Colors[ImGuiCol_WindowBg] = ImVec4(0.9f, 0.9f, 0.9f, 1.00f);
@@ -170,7 +170,7 @@ void InitMenu(igl::opengl::glfw::Viewer &viewer, igl::opengl::glfw::imgui::ImGui
 }
 
 /// Show tips hovering on the UI items
-void HelpMarker(const char *content) {
+void MenuManager::HelpMarker(const char *content) {
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);

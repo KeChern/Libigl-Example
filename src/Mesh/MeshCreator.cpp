@@ -23,7 +23,6 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &minPt, const Eigen::Vecto
 
     /// 3. Translate the cuboid to its computed position
     mesh->Transform(transMat);
-
     return mesh;
 }
 
@@ -73,7 +72,25 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &sizeVec) {
 
 Mesh *MeshCreator::CreateCylinder(const Eigen::Vector3d &capCenterA, const Eigen::Vector3d &capCenterB, double radius,
                                   int radSamp) {
+    /// 1. Create a cylinder with the given radius and computed length
+    double length = (capCenterA - capCenterB).norm();
+    Mesh *mesh = CreateCylinder(length, radius, radSamp);
 
+    /// 2. Compute the translation matrix
+    Eigen::Vector3d center = 0.5f * (capCenterA + capCenterB);
+    Eigen::Affine3d transMat = GetTranslationMatrix(center);
+
+    /// 3. Compute the rotation matrix (note: default cylinder is aligned with x-axis)
+    Eigen::Vector3d xAxis = {1, 0, 0};
+    Eigen::Vector3d vec = (capCenterB - capCenterA).normalized();
+    Eigen::Affine3d rotMat = GetRotationMatrix(xAxis, vec);
+
+    /// 4. Compute the trannsform matrix on the cylinder
+    Eigen::Affine3d affineMat = transMat * rotMat;
+
+    /// 5. Transform the cylinder to its target position and orientation
+    mesh->Transform(affineMat);
+    return mesh;
 }
 
 Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
@@ -124,6 +141,65 @@ Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
 
     /// 3. Construct a triangular mesh of the cylinder
     Mesh *mesh = new Mesh(verlist, trilist);
+    return mesh;
+}
 
+Mesh *MeshCreator::CreateSphere(const Eigen::Vector3d &center, double radius, int radSamp) {
+    Mesh *mesh = CreateSphere(radius, radSamp);
+    Eigen::Affine3d mat = GetTranslationMatrix(center);
+    mesh->Transform(mat);
+    return mesh;
+}
+
+Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
+    std::vector<Eigen::Vector3d> verlist;
+    std::vector<Eigen::Vector3i> trilist;
+
+    int polarSamp = radSamp / 2;
+    int azimuSamp = radSamp;
+
+    /// 1. Compute vertices of the sphere
+    int midNum = (polarSamp - 1) * azimuSamp;
+    verlist.reserve(midNum + 2);
+    for (int i = 1; i < polarSamp; i++) {
+        double alpha = M_PI_2 - M_PI * i / polarSamp;
+        for (int j = 0; j < azimuSamp; j++) {
+            double beta = j * 2.0 * M_PI / azimuSamp;
+            double x = radius * cos(alpha) * cos(beta);
+            double y = radius * cos(alpha) * sin(beta);
+            double z = radius * sin(alpha);
+            verlist.emplace_back(x, y, z);
+        }
+    }
+    verlist.emplace_back(0, 0, radius);
+    verlist.emplace_back(0, 0, -radius);
+
+    /// 2. Compute triangles of the sphere
+    trilist.reserve(polarSamp * azimuSamp * 2);
+
+    /// Top ring of triangles
+    for (int j = 0; j < azimuSamp; j++) {
+        trilist.emplace_back(midNum, j, (j + 1) % azimuSamp);
+    }
+
+    /// Middle rings of triangles
+    for (int i = 1; i < polarSamp - 1; i++) {
+        for (int j = 0; j < azimuSamp; j++) {
+            int i1 = (i - 1) * azimuSamp + j;
+            int j1 = (i - 1) * azimuSamp + (j + 1) % azimuSamp;
+            int i2 = i * azimuSamp + j;
+            int j2 = i * azimuSamp + (j + 1) % azimuSamp;
+            trilist.emplace_back(i1, i2, j1);
+            trilist.emplace_back(i2, j2, j1);
+        }
+    }
+
+    /// Bottom ring of triangles
+    for (int j = 0; j < azimuSamp; j++) {
+        trilist.emplace_back(midNum + 1, midNum - azimuSamp + (j + 1) % azimuSamp, midNum - azimuSamp + j);
+    }
+
+    /// 3. Construct a triangular mesh of the sphere
+    Mesh *mesh = new Mesh(verlist, trilist);
     return mesh;
 }

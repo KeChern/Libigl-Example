@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     Renderer.h
+///     RenderManager.h
 ///
 ///     Rendering 3D contents by libigl
 ///
@@ -10,9 +10,9 @@
 ///
 /// ========================================
 
-#include "Renderer.h"
+#include "RenderManager.h"
 
-void Renderer::InitViewer(igl::opengl::glfw::Viewer &viewer) {
+void RenderManager::InitViewer(igl::opengl::glfw::Viewer &viewer) {
     /// Animation
     viewer.core().animation_max_fps = 60.0;
     viewer.core().is_animating = false;
@@ -41,7 +41,7 @@ void Renderer::InitViewer(igl::opengl::glfw::Viewer &viewer) {
     viewer.core().trackball_angle = angle;
 }
 
-void Renderer::RenderScene(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
+void RenderManager::RenderScene(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
 //    viewer.data_list.clear();
 
     /// We have to render mechanism first (for animating it properly)
@@ -51,35 +51,35 @@ void Renderer::RenderScene(igl::opengl::glfw::Viewer &viewer, const std::vector<
 
 }
 
-void Renderer::RenderModel(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
+void RenderManager::RenderModel(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
     viewer.data_list = datalist;
     ModelNum = datalist.size();
 }
 
-void Renderer::RenderGround(igl::opengl::glfw::Viewer &viewer, const Eigen::Vector3d &origin, double size, int gridNum,
-                            int sampNum) {
+void RenderManager::RenderGround(igl::opengl::glfw::Viewer &viewer, const Eigen::Vector3d &origin, double size, int gridNum,
+                                 int sampNum) {
 
 }
 
-void Renderer::RenderAxes(igl::opengl::glfw::Viewer &viewer, const Eigen::Vector3d &origin, double size, int sampNum) {
+void RenderManager::RenderAxes(igl::opengl::glfw::Viewer &viewer, const Eigen::Vector3d &origin, double size, int sampNum) {
 
 }
 
-void Renderer::ShowModel(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
+void RenderManager::ShowModel(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
 
 }
 
-void Renderer::ShowGround(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
+void RenderManager::ShowGround(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
 
 }
 
-void Renderer::ShowAxes(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
+void RenderManager::ShowAxes(igl::opengl::glfw::Viewer &viewer, bool is_visible) {
 
 }
 
 
 void
-Renderer::AppendDataToViewer(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
+RenderManager::AppendDataToViewer(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist) {
     for (const auto &data: datalist) {
         viewer.data_list.emplace_back(data);
     }

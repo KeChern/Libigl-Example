@@ -41,14 +41,14 @@ target_link_libraries(CoreLib PUBLIC igl::glfw)
 
 #########################################
 #####                               #####
-#####            Render             #####
+#####           Interface           #####
 #####                               #####
 #########################################
-file(GLOB RenderFiles
-        src/Render/*.h
-        src/Render/*.cpp)
-add_library(RenderLib STATIC ${RenderFiles})
-target_link_libraries(RenderLib PUBLIC igl::imgui)
+file(GLOB InterfaceFiles
+        src/Interface/*.h
+        src/Interface/*.cpp)
+add_library(InterfaceLib STATIC ${InterfaceFiles})
+target_link_libraries(InterfaceLib PUBLIC igl::imgui)
 
 #########################################
 #####                               #####
@@ -60,7 +60,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(${PROJECT_NAME} PUBLIC
         # ours
         CoreLib
-        RenderLib
+        InterfaceLib
 
         # igl
         igl::glfw

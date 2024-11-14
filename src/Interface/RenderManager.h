@@ -1,6 +1,6 @@
 /// ========================================
 ///
-///     Renderer.h
+///     RenderManager.h
 ///
 ///     Rendering 3D contents by libigl
 ///
@@ -10,23 +10,23 @@
 ///
 /// ========================================
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RENDERMANAGER_H
+#define RENDERMANAGER_H
 
 #include <igl/opengl/glfw/Viewer.h>
 
-class Renderer {
+class RenderManager {
 public:
     size_t ModelNum;
     size_t GroundNum;
     size_t AxesNum;
 
 public:
-    Renderer() = default;
-    ~Renderer() = default;
+    RenderManager() = default;
+    ~RenderManager() = default;
 
     ///
-    void InitViewer(igl::opengl::glfw::Viewer &viewer);
+    static void InitViewer(igl::opengl::glfw::Viewer &viewer);
 
     /// Render Objects
     void RenderScene(igl::opengl::glfw::Viewer &viewer, const std::vector<igl::opengl::ViewerData> &datalist);
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif //RENDERER_H
+#endif //RENDERMANAGER_H
