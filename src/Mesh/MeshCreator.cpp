@@ -255,3 +255,77 @@ Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
     Mesh *mesh = new Mesh(verlist, facelist);
     return mesh;
 }
+
+Mesh *MeshCreator::Create3DCurve(const std::vector<Eigen::Vector3d> &ptList, double radius, int radSamp,
+                                 const std::string &type) {
+    int ptNum = static_cast<int>(ptList.size());
+    Eigen::Vector3d center = Eigen::Vector3d::Zero();
+    for (const Eigen::Vector3d& pt: ptList) {
+        center += pt;
+    }
+    center /= ptNum;
+
+    std::vector <Eigen::Vector3d> tangentList(ptNum);
+    for (int i = 0; i < ptNum - 1; i++) {
+        int nexti = (i + 1) % ptNum;
+        tangentList[i] = (ptList[nexti] - ptList[i]).normalized();
+    }
+    tangentList[ptNum - 1] = (ptList[ptNum - 1] - ptList[ptNum - 2]).normalized();
+
+    std::vector <Eigen::Vector3d> normalList(ptNum), binormalList(ptNum);
+    for (int i = 0; i < ptNum; i++) {
+        Eigen::Vector3d normal = ptList[i] - center;
+        normal = normal - normal.dot(tangentList[i]) * tangentList[i];
+        normalList[i] = normal.normalized();
+
+        Eigen::Vector3d binormal = tangentList[i].cross(normalList[i]);
+        binormalList[i] = binormal.normalized();
+    }
+
+    std::vector<Eigen::Vector3d> verList;
+    verList.reserve(ptNum * radSamp + 2);
+    for (int i = 0; i < ptNum; i++) {
+        for (int j = 0; j < radSamp; j++) {
+            double theta = j * 2 * M_PI / radSamp;
+            Eigen::Vector3d EnvPt = ptList[i] + radius * (normalList[i] * cos(theta) + binormalList[i] * sin(theta));
+            verList.emplace_back(EnvPt);
+        }
+    }
+    if (type == "open") {
+        verList.emplace_back(ptList[0]);
+        verList.emplace_back(ptList[ptNum - 1]);
+    }
+
+    std::vector<Eigen::Vector3d> faceList;
+    faceList.reserve(1);
+    int maxFaceNum;
+    if (type == "closed")
+        maxFaceNum = ptNum;
+    else if (type == "open")
+        maxFaceNum = ptNum - 1;
+    else
+        printf("Type in 'Create3DCurve' is invaild!");
+
+    for (int i = 0; i < maxFaceNum; i++) {
+        for (int j = 0; j < radSamp; j++) {
+            int i1 = i * radSamp;
+            int i2 = (i1 + radSamp) % (ptNum * radSamp);
+            int j1 = j;
+            int j2 = (j + 1) % radSamp;
+            faceList.emplace_back(i1 + j1, i2 + j2, i2 + j1);
+            faceList.emplace_back(i1 + j1, i1 + j2, i2 + j2);
+        }
+    }
+
+    if (type == "open") {
+        for (int j = 0; j < radSamp; j++) {
+            int i = ptNum * radSamp;
+            int j1 = j;
+            int j2 = (j + 1) % radSamp;
+            faceList.emplace_back(i, j2, j1);
+
+            i = (ptNum - 1) * radSamp;
+            faceList.emplace_back(i, i + j1, i + j2);
+        }
+    }
+}

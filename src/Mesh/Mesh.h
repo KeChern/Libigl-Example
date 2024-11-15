@@ -13,14 +13,16 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <Eigen/Geometry>
+
 #include <igl/readOBJ.h>
 #include <igl/writeOBJ.h>
+#include <igl/copyleft/cgal/convex_hull.h>
 
-//#include "Utility/HelpStruct.h"
 #include "Utility/HelpFunc.h"
+//#include "Utility/HelpStruct.h"
 
 class Mesh {
 public:
@@ -28,10 +30,12 @@ public:
     Eigen::MatrixX3d verM;
     /// Store triangles in a matrix (m,3)
     Eigen::MatrixX3i faceM;
+
 //    /// Store per triangle normal in a matrix (m,3)
 //    Eigen::MatrixX3d norM;
 //    /// Triangles (vertex positions)
 //    std::vector<Triangle*> triangles;
+
 public:
     Mesh() = default;
     ~Mesh() = default;
@@ -48,6 +52,8 @@ public:
 
     void Transform(const Eigen::Affine3d &mat);
     void Transform(const Eigen::Affine3d &mat, Eigen::MatrixX3d &new_verM);
+
+    void GetConvexHull();
 
     void SaveAsOBJ(const std::string &filename);
     double ComputeVolume();

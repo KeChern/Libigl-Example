@@ -12,8 +12,9 @@
 
 #include "Interface/MenuManager.h"
 #include "Interface/RenderManager.h"
-#include "Mesh/MeshCreator.h"
-#include "Mesh/MeshBoolean.h"
+//#include "Mesh/MeshCreator.h"
+//#include "Mesh/MeshBoolean.h"
+
 
 bool key_down(igl::opengl::glfw::Viewer &viewer, unsigned char key, int modifier) {
     if (key == ' ') {
@@ -44,24 +45,26 @@ int main(int argc, char *argv[]) {
 
 
 //    MeshCreator meshCreator;
-    Mesh *cuboid = MeshCreator::CreateCuboid(Eigen::Vector3d(2, 3, 4));
+//    Mesh *cuboid = MeshCreator::CreateCuboid(Eigen::Vector3d(2, 3, 4));
     Mesh *bunny = new Mesh("../data/bunny.obj");
-    bunny = MeshCreator::CreateCylinder(2, 0.5, 200);
-    bunny = MeshCreator::CreateCylinder(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 6);
-    bunny = MeshCreator::CreateSphere(Eigen::Vector3d(1, 1, 1), 1, 20);
-    bunny = MeshCreator::CreateCone(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 100);
-
-    Mesh *s1 = MeshCreator::CreateSphere(Eigen::Vector3d(0, 0, 0), 1, 50);
-    Mesh *s2 = MeshCreator::CreateSphere(Eigen::Vector3d(3, 0, 0), 1, 50);
-
-    s1 = MeshBoolean::MeshConnect(s1, s2);
+    bunny->Transform(GetScalingMatrix(10));
+    bunny->GetConvexHull();
+//    bunny = MeshCreator::CreateCylinder(2, 0.5, 200);
+//    bunny = MeshCreator::CreateCylinder(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 6);
+//    bunny = MeshCreator::CreateSphere(Eigen::Vector3d(1, 1, 1), 1, 20);
+//    bunny = MeshCreator::CreateCone(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 100);
+//
+//    Mesh *s1 = MeshCreator::CreateSphere(Eigen::Vector3d(0, 0, 0), 1, 50);
+//    Mesh *s2 = MeshCreator::CreateSphere(Eigen::Vector3d(3, 0, 0), 1, 50);
+//
+//    s1 = MeshBoolean::MeshConnect(s1, s2);
 //    std::cout<<s1->faceM.array()+200<<std::endl;
 
 
 
     std::vector<igl::opengl::ViewerData> DataList;
     igl::opengl::ViewerData data;
-    data.set_mesh(s1->verM, s1->faceM);
+    data.set_mesh(bunny->verM, bunny->faceM);
     data.show_lines = true;
     data.face_based = true;
     data.double_sided = false;
@@ -69,7 +72,7 @@ int main(int argc, char *argv[]) {
 
 //    std::cout<<Eigen::Vector3d::Ones()<<std::endl;
 
-    data.set_mesh(s2->verM, s2->faceM);
+//    data.set_mesh(s2->verM, s2->faceM);
 //    data.show_lines = true;
 //    data.face_based = true;
 //    data.set_colors(Eigen::RowVector3d(0.86, 0.62, 0.86));

@@ -17,7 +17,6 @@
 
 #include "Mesh/MeshCreator.h"
 
-
 class RenderManager {
 public:
     int ModelNum = 0;

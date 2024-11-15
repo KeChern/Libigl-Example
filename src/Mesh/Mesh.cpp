@@ -99,6 +99,12 @@ void Mesh::VerMat2VerList(std::vector<Eigen::Vector3d> &verlist) {
     }
 }
 
+void Mesh::GetConvexHull() {
+    Eigen::MatrixXd V;
+    igl::copyleft::cgal::convex_hull(verM, V, faceM);
+    verM = V;
+}
+
 /// ========================================
 ///             Mesh Operation
 /// ========================================

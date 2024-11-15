@@ -49,7 +49,7 @@ file(GLOB InterfaceFiles
         src/Interface/*.cpp)
 add_library(InterfaceLib STATIC ${InterfaceFiles})
 target_include_directories(InterfaceLib PUBLIC ${CMAKE_SOURCE_DIR}/src)
-target_link_libraries(InterfaceLib PUBLIC igl::imgui)
+target_link_libraries(InterfaceLib PUBLIC igl::imgui igl_copyleft::cgal)
 
 #########################################
 #####                               #####

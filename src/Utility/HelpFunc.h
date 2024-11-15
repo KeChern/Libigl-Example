@@ -16,12 +16,14 @@
 #include <cfloat>
 #include <random>
 #include <iostream>
-
+#include <unordered_map>
 #include <Eigen/Geometry>
+
 
 double GetRandomDouble(double a, double b);
 
 Eigen::Affine3d GetTranslationMatrix(const Eigen::Vector3d &transVec);
+Eigen::Affine3d GetTranslationMatrix(double x, double y, double z);
 Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis);
 Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis, const Eigen::Vector3d &rotCenter);
 Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &startVec, const Eigen::Vector3d &endVec);

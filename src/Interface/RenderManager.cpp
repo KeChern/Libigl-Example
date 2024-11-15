@@ -26,8 +26,8 @@ void RenderManager::InitViewer(igl::opengl::glfw::Viewer &viewer) {
     viewer.core().light_position = Eigen::Vector3f(0.0, 0.0, 0.3);
 
     /// Camera
-    viewer.core().camera_zoom = 0.9;
-    viewer.core().camera_eye = Eigen::Vector3f(6, 6, 6);
+    viewer.core().camera_zoom = 0.1;
+    viewer.core().camera_eye = Eigen::Vector3f(10, 10, 10);
     viewer.core().camera_dfar = 10000;
     viewer.core().camera_dnear = 0.01;
 
@@ -39,6 +39,10 @@ void RenderManager::InitViewer(igl::opengl::glfw::Viewer &viewer) {
     angle.z() = 0.0f;
     angle.w() = 1.0f;
     viewer.core().trackball_angle = angle;
+//    Mesh *s1 = MeshCreator::CreateSphere(Eigen::Vector3d(0, 0, 0), 1, 50);
+//    Mesh *s2 = MeshCreator::CreateSphere(Eigen::Vector3d(1, 0, 0), 1, 50);
+//
+//    s1 = MeshBoolean::MeshUnion(s1, s2);
 }
 
 void

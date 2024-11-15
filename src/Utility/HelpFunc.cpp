@@ -18,6 +18,11 @@ double GetRandomDouble(double a, double b) {
     return distribution(gen);
 }
 
+Eigen::Affine3d GetTranslationMatrix(double x, double y, double z) {
+    Eigen::Affine3d affineMat = Eigen::Affine3d::Identity();
+    affineMat.translation() = Eigen::Vector3d(x, y, z);
+    return affineMat;
+}
 
 Eigen::Affine3d GetTranslationMatrix(const Eigen::Vector3d &transVec) {
     Eigen::Affine3d affineMat = Eigen::Affine3d::Identity();
