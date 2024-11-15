@@ -30,7 +30,7 @@ Eigen::Affine3d GetTranslationMatrix(const Eigen::Vector3d &transVec) {
     return affineMat;
 }
 
-Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis) {
+Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &rotAxis, const double &rotAngle) {
     Eigen::AngleAxisd angleAxis(rotAngle, rotAxis.normalized());
     Eigen::Matrix3d rotMat = angleAxis.toRotationMatrix();
     Eigen::Affine3d affineMat = Eigen::Affine3d::Identity();
@@ -39,8 +39,8 @@ Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d 
 }
 
 Eigen::Affine3d
-GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis, const Eigen::Vector3d &rotCenter) {
-    return GetTranslationMatrix(rotCenter) * GetRotationMatrix(rotAngle, rotAxis) * GetTranslationMatrix(-rotCenter);
+GetRotationMatrix(const Eigen::Vector3d &rotCenter, const Eigen::Vector3d &rotAxis, const double &rotAngle) {
+    return GetTranslationMatrix(rotCenter) * GetRotationMatrix(rotAxis, rotAngle) * GetTranslationMatrix(-rotCenter);
 }
 
 Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &startVec, const Eigen::Vector3d &endVec) {
@@ -58,11 +58,11 @@ Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &startVec, const Eigen::
             if (another_rotAxis.norm() < FLT_MIN) {
                 another_rotAxis = Eigen::Vector3d(0, 0, 1).cross(start_vec);
             }
-            rotMat = GetRotationMatrix(M_PI, another_rotAxis);
+            rotMat = GetRotationMatrix(another_rotAxis, M_PI);
         }
     } else {
         double angle = acos(start_vec.dot(end_vec));
-        rotMat = GetRotationMatrix(angle, rotAxis);
+        rotMat = GetRotationMatrix(rotAxis, angle);
     }
     return rotMat;
 }

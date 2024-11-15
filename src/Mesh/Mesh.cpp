@@ -142,7 +142,7 @@ void Mesh::Transform(const Eigen::Affine3d &mat, Eigen::MatrixX3d &new_verM) {
 ///                  Save
 /// ========================================
 
-void Mesh::SaveAsOBJ(const std::string &filename) {
+void Mesh::SaveOBJ(const std::string &filename) {
     igl::writeOBJ("../data/" + filename, verM, faceM);
 }
 

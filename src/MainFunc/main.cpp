@@ -44,11 +44,12 @@ int main(int argc, char *argv[]) {
 //    }
 
 
-//    MeshCreator meshCreator;
 //    Mesh *cuboid = MeshCreator::CreateCuboid(Eigen::Vector3d(2, 3, 4));
     Mesh *bunny = new Mesh("../data/bunny.obj");
-    bunny->Transform(GetScalingMatrix(10));
-    bunny->GetConvexHull();
+
+//    bunny->Transform(GetRotationMatrix(Eigen::Vector3d(1, 0, 0), M_PI_2));
+//    bunny->Transform(GetScalingMatrix(10));
+//    bunny->GetConvexHull();
 //    bunny = MeshCreator::CreateCylinder(2, 0.5, 200);
 //    bunny = MeshCreator::CreateCylinder(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 6);
 //    bunny = MeshCreator::CreateSphere(Eigen::Vector3d(1, 1, 1), 1, 20);
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]) {
     std::vector<igl::opengl::ViewerData> DataList;
     igl::opengl::ViewerData data;
     data.set_mesh(bunny->verM, bunny->faceM);
-    data.show_lines = true;
+    data.show_lines = false;
     data.face_based = true;
     data.double_sided = false;
     DataList.emplace_back(data);

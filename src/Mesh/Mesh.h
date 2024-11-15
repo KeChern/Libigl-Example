@@ -55,7 +55,7 @@ public:
 
     void GetConvexHull();
 
-    void SaveAsOBJ(const std::string &filename);
+    void SaveOBJ(const std::string &filename);
     double ComputeVolume();
 };
 

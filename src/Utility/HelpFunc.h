@@ -24,8 +24,8 @@ double GetRandomDouble(double a, double b);
 
 Eigen::Affine3d GetTranslationMatrix(const Eigen::Vector3d &transVec);
 Eigen::Affine3d GetTranslationMatrix(double x, double y, double z);
-Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis);
-Eigen::Affine3d GetRotationMatrix(const double &rotAngle, const Eigen::Vector3d &rotAxis, const Eigen::Vector3d &rotCenter);
+Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &rotAxis, const double &rotAngle);
+Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &rotCenter, const Eigen::Vector3d &rotAxis, const double &rotAngle);
 Eigen::Affine3d GetRotationMatrix(const Eigen::Vector3d &startVec, const Eigen::Vector3d &endVec);
 Eigen::Affine3d GetScalingMatrix(const Eigen::Vector3d &scaleVec);
 Eigen::Affine3d GetScalingMatrix(double scale);
