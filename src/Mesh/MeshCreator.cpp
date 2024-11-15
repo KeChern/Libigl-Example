@@ -27,8 +27,8 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &minPt, const Eigen::Vecto
 }
 
 Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &sizeVec) {
-    std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> facelist;
+    std::vector<Eigen::Vector3d> verList;
+    std::vector<Eigen::Vector3i> faceList;
 
     /// 1. Compute vertices of the cuboid
     double minX = -0.5f * sizeVec[0];
@@ -39,34 +39,36 @@ Mesh *MeshCreator::CreateCuboid(const Eigen::Vector3d &sizeVec) {
     double maxY = 0.5f * sizeVec[1];
     double maxZ = 0.5f * sizeVec[2];
 
-    verlist.emplace_back(minX, minY, maxZ);
-    verlist.emplace_back(maxX, minY, maxZ);
-    verlist.emplace_back(maxX, maxY, maxZ);
-    verlist.emplace_back(minX, maxY, maxZ);
+    verList.reserve(8);
+    verList.emplace_back(minX, minY, maxZ);
+    verList.emplace_back(maxX, minY, maxZ);
+    verList.emplace_back(maxX, maxY, maxZ);
+    verList.emplace_back(minX, maxY, maxZ);
 
-    verlist.emplace_back(minX, minY, minZ);
-    verlist.emplace_back(maxX, minY, minZ);
-    verlist.emplace_back(maxX, maxY, minZ);
-    verlist.emplace_back(minX, maxY, minZ);
+    verList.emplace_back(minX, minY, minZ);
+    verList.emplace_back(maxX, minY, minZ);
+    verList.emplace_back(maxX, maxY, minZ);
+    verList.emplace_back(minX, maxY, minZ);
 
     /// 2. Compute triangles of the cuboid
-    facelist.emplace_back(5, 4, 7);
-    facelist.emplace_back(5, 7, 6);
-    facelist.emplace_back(7, 2, 6);
-    facelist.emplace_back(7, 3, 2);
+    faceList.reserve(12);
+    faceList.emplace_back(5, 4, 7);
+    faceList.emplace_back(5, 7, 6);
+    faceList.emplace_back(7, 2, 6);
+    faceList.emplace_back(7, 3, 2);
 
-    facelist.emplace_back(1, 0, 4);
-    facelist.emplace_back(1, 3, 0);
-    facelist.emplace_back(5, 6, 2);
-    facelist.emplace_back(5, 2, 1);
+    faceList.emplace_back(1, 0, 4);
+    faceList.emplace_back(1, 3, 0);
+    faceList.emplace_back(5, 6, 2);
+    faceList.emplace_back(5, 2, 1);
 
-    facelist.emplace_back(4, 5, 1);
-    facelist.emplace_back(1, 2, 3);
-    facelist.emplace_back(0, 3, 4);
-    facelist.emplace_back(4, 3, 7);
+    faceList.emplace_back(4, 5, 1);
+    faceList.emplace_back(1, 2, 3);
+    faceList.emplace_back(0, 3, 4);
+    faceList.emplace_back(4, 3, 7);
 
     /// 3. Construct a triangular mesh
-    Mesh *mesh = new Mesh(verlist, facelist);
+    Mesh *mesh = new Mesh(verList, faceList);
     return mesh;
 }
 
@@ -94,53 +96,52 @@ Mesh *MeshCreator::CreateCylinder(const Eigen::Vector3d &capCenterA, const Eigen
 }
 
 Mesh *MeshCreator::CreateCylinder(double length, double radius, int radSamp) {
-    std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> facelist;
+    std::vector<Eigen::Vector3d> verList;
+    std::vector<Eigen::Vector3i> faceList;
 
     /// 1. Computer vertices of the cylinder
-
     double halfLength = 0.5f * length;
+    verList.reserve(2 * radSamp + 2);
     /// Sampled points on the right cap
     for (int i = 0; i < radSamp; i++) {
         double beta = i * 2.0 * M_PI / radSamp;
 
-        double x, y, z;
-        x = halfLength;
-        y = radius * cos(beta);
-        z = radius * sin(beta);
+        double x = halfLength;
+        double y = radius * cos(beta);
+        double z = radius * sin(beta);
 
-        verlist.emplace_back(x, y, z);
+        verList.emplace_back(x, y, z);
     }
     /// Sampled points on the left cap
     for (int i = 0; i < radSamp; i++) {
         double beta = i * 2.0 * M_PI / radSamp;
 
-        double x, y, z;
-        x = -halfLength;
-        y = radius * cos(beta);
-        z = radius * sin(beta);
+        double x = -halfLength;
+        double y = radius * cos(beta);
+        double z = radius * sin(beta);
 
-        verlist.emplace_back(x, y, z);
+        verList.emplace_back(x, y, z);
     }
     /// Center point of the right cap
-    verlist.emplace_back(halfLength, 0, 0);
+    verList.emplace_back(halfLength, 0, 0);
     /// Center point of the left cap
-    verlist.emplace_back(-halfLength, 0, 0);
+    verList.emplace_back(-halfLength, 0, 0);
 
     /// 2. Computer triangles of the cylinder
+    faceList.reserve(radSamp * 4);
     for (int i = 0; i < radSamp; i++) {
         int i1 = i;
         int j1 = (i + 1) % radSamp;
         int i2 = i + radSamp;
         int j2 = j1 + radSamp;
-        facelist.emplace_back(i1, j2, j1);
-        facelist.emplace_back(i2, j2, i1);
-        facelist.emplace_back(i1, j1, 2 * radSamp);
-        facelist.emplace_back(j2, i2, 2 * radSamp + 1);
+        faceList.emplace_back(i1, j2, j1);
+        faceList.emplace_back(i2, j2, i1);
+        faceList.emplace_back(i1, j1, 2 * radSamp);
+        faceList.emplace_back(j2, i2, 2 * radSamp + 1);
     }
 
     /// 3. Construct a triangular mesh of the cylinder
-    Mesh *mesh = new Mesh(verlist, facelist);
+    Mesh *mesh = new Mesh(verList, faceList);
     return mesh;
 }
 
@@ -151,15 +152,15 @@ Mesh *MeshCreator::CreateSphere(const Eigen::Vector3d &center, double radius, in
 }
 
 Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
-    std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> facelist;
+    std::vector<Eigen::Vector3d> verList;
+    std::vector<Eigen::Vector3i> faceList;
 
     int polarSamp = radSamp / 2;
     int azimuSamp = radSamp;
 
     /// 1. Compute vertices of the sphere
     int midNum = (polarSamp - 1) * azimuSamp;
-    verlist.reserve(midNum + 2);
+    verList.reserve(midNum + 2);
     for (int i = 1; i < polarSamp; i++) {
         double alpha = M_PI_2 - M_PI * i / polarSamp;
         for (int j = 0; j < azimuSamp; j++) {
@@ -167,18 +168,18 @@ Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
             double x = radius * cos(alpha) * cos(beta);
             double y = radius * cos(alpha) * sin(beta);
             double z = radius * sin(alpha);
-            verlist.emplace_back(x, y, z);
+            verList.emplace_back(x, y, z);
         }
     }
-    verlist.emplace_back(0, 0, radius);
-    verlist.emplace_back(0, 0, -radius);
+    verList.emplace_back(0, 0, radius);
+    verList.emplace_back(0, 0, -radius);
 
     /// 2. Compute triangles of the sphere
-    facelist.reserve(polarSamp * azimuSamp * 2);
+    faceList.reserve(polarSamp * azimuSamp * 2);
 
     /// Top ring of triangles
     for (int j = 0; j < azimuSamp; j++) {
-        facelist.emplace_back(midNum, j, (j + 1) % azimuSamp);
+        faceList.emplace_back(midNum, j, (j + 1) % azimuSamp);
     }
 
     /// Middle rings of triangles
@@ -188,18 +189,18 @@ Mesh *MeshCreator::CreateSphere(double radius, int radSamp) {
             int j1 = (i - 1) * azimuSamp + (j + 1) % azimuSamp;
             int i2 = i * azimuSamp + j;
             int j2 = i * azimuSamp + (j + 1) % azimuSamp;
-            facelist.emplace_back(i1, i2, j1);
-            facelist.emplace_back(i2, j2, j1);
+            faceList.emplace_back(i1, i2, j1);
+            faceList.emplace_back(i2, j2, j1);
         }
     }
 
     /// Bottom ring of triangles
     for (int j = 0; j < azimuSamp; j++) {
-        facelist.emplace_back(midNum + 1, midNum - azimuSamp + (j + 1) % azimuSamp, midNum - azimuSamp + j);
+        faceList.emplace_back(midNum + 1, midNum - azimuSamp + (j + 1) % azimuSamp, midNum - azimuSamp + j);
     }
 
     /// 3. Construct a triangular mesh of the sphere
-    Mesh *mesh = new Mesh(verlist, facelist);
+    Mesh *mesh = new Mesh(verList, faceList);
     return mesh;
 }
 
@@ -214,8 +215,8 @@ Mesh *MeshCreator::CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Ve
 
     /// 3. Compute the rotation matrix (note: default cylinder is aligned with x-axis)
     Eigen::Vector3d xAxis = {1, 0, 0};
-    Eigen::Vector3d axis_n = (apexPoint - baseCenter).normalized();
-    Eigen::Affine3d rotMat = GetRotationMatrix(xAxis, axis_n);
+    Eigen::Vector3d centerAxis = (apexPoint - baseCenter).normalized();
+    Eigen::Affine3d rotMat = GetRotationMatrix(xAxis, centerAxis);
 
     /// 4. Transform the cylinder to its target position and orientation
     mesh->Transform(transMat * rotMat);
@@ -224,11 +225,11 @@ Mesh *MeshCreator::CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Ve
 
 Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
     /// Create a cone that is oriented along the +x-axis; its base is centered at the origin
-    std::vector<Eigen::Vector3d> verlist;
-    std::vector<Eigen::Vector3i> facelist;
+    std::vector<Eigen::Vector3d> verList;
+    std::vector<Eigen::Vector3i> faceList;
 
     /// 1. Compute vertices of the cone
-    verlist.reserve(radSamp + 2);
+    verList.reserve(radSamp + 2);
 
     /// Sampled points on the base
     for (int i = 0; i < radSamp; i++) {
@@ -236,23 +237,43 @@ Mesh *MeshCreator::CreateCone(double length, double radius, int radSamp) {
         double x = 0;
         double y = radius * cos(beta);
         double z = radius * sin(beta);
-        verlist.emplace_back(x, y, z);
+        verList.emplace_back(x, y, z);
     }
     /// Base center point
-    verlist.emplace_back(0, 0, 0);
+    verList.emplace_back(0, 0, 0);
     /// Apex point
-    verlist.emplace_back(length, 0, 0);
+    verList.emplace_back(length, 0, 0);
 
     /// 2. Compute triangles of the cone
-    facelist.reserve(2 * radSamp);
+    faceList.reserve(2 * radSamp);
     /// Triangles of the base
     for (int j = 0; j < radSamp; j++) {
-        facelist.emplace_back(radSamp, (j + 1) % radSamp, j);
-        facelist.emplace_back(radSamp + 1, j, (j + 1) % radSamp);
+        faceList.emplace_back(radSamp, (j + 1) % radSamp, j);
+        faceList.emplace_back(radSamp + 1, j, (j + 1) % radSamp);
     }
 
     /// 3. Construct a triangular mesh of the cylinder
-    Mesh *mesh = new Mesh(verlist, facelist);
+    Mesh *mesh = new Mesh(verList, faceList);
+    return mesh;
+}
+
+Mesh *MeshCreator::CreateRectangularSurface(const std::vector<Eigen::Vector3d> &verList, int rows, int cols) {
+    if (verList.size() != rows * cols)
+        std::cout << "rows * cols is NOT equal to size of vector!" << std::endl;
+
+    if (rows < 2 || cols < 2)
+        std::cout << "rows/cols is less than 2!" << std::endl;
+
+    std::vector<Eigen::Vector3i> faceList;
+    faceList.reserve((rows - 1) * (cols - 1));
+    for (int i = 0; i < rows - 1; i++) {
+        for (int j = 0; j < cols - 1; j++) {
+            int id = i * cols + j;
+            faceList.emplace_back(id, id + cols, id + 1);
+            faceList.emplace_back(id + 1, id + cols, id + cols + 1);
+        }
+    }
+    Mesh *mesh = new Mesh(verList, faceList);
     return mesh;
 }
 
@@ -260,19 +281,19 @@ Mesh *MeshCreator::Create3DCurve(const std::vector<Eigen::Vector3d> &ptList, dou
                                  const std::string &type) {
     int ptNum = static_cast<int>(ptList.size());
     Eigen::Vector3d center = Eigen::Vector3d::Zero();
-    for (const Eigen::Vector3d& pt: ptList) {
+    for (const Eigen::Vector3d &pt: ptList) {
         center += pt;
     }
     center /= ptNum;
 
-    std::vector <Eigen::Vector3d> tangentList(ptNum);
+    std::vector<Eigen::Vector3d> tangentList(ptNum);
     for (int i = 0; i < ptNum - 1; i++) {
         int nexti = (i + 1) % ptNum;
         tangentList[i] = (ptList[nexti] - ptList[i]).normalized();
     }
     tangentList[ptNum - 1] = (ptList[ptNum - 1] - ptList[ptNum - 2]).normalized();
 
-    std::vector <Eigen::Vector3d> normalList(ptNum), binormalList(ptNum);
+    std::vector<Eigen::Vector3d> normalList(ptNum), binormalList(ptNum);
     for (int i = 0; i < ptNum; i++) {
         Eigen::Vector3d normal = ptList[i] - center;
         normal = normal - normal.dot(tangentList[i]) * tangentList[i];
@@ -297,15 +318,17 @@ Mesh *MeshCreator::Create3DCurve(const std::vector<Eigen::Vector3d> &ptList, dou
     }
 
     std::vector<Eigen::Vector3d> faceList;
-    faceList.reserve(1);
     int maxFaceNum;
     if (type == "closed")
         maxFaceNum = ptNum;
     else if (type == "open")
         maxFaceNum = ptNum - 1;
-    else
+    else {
+        maxFaceNum = -1;
         printf("Type in 'Create3DCurve' is invaild!");
+    }
 
+    faceList.reserve(maxFaceNum * radSamp + radSamp);
     for (int i = 0; i < maxFaceNum; i++) {
         for (int j = 0; j < radSamp; j++) {
             int i1 = i * radSamp;

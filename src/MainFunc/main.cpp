@@ -12,9 +12,6 @@
 
 #include "Interface/MenuManager.h"
 #include "Interface/RenderManager.h"
-//#include "Mesh/MeshCreator.h"
-//#include "Mesh/MeshBoolean.h"
-
 
 bool key_down(igl::opengl::glfw::Viewer &viewer, unsigned char key, int modifier) {
     if (key == ' ') {
@@ -22,7 +19,7 @@ bool key_down(igl::opengl::glfw::Viewer &viewer, unsigned char key, int modifier
     }
     return false;
 }
-#include "Utility/HelpFunc.h"
+
 int main(int argc, char *argv[]) {
     /// The viewer
     igl::opengl::glfw::Viewer viewer;
@@ -37,18 +34,12 @@ int main(int argc, char *argv[]) {
     menuMgr.InitMenu(viewer, menu);
     renderMgr.InitViewer(viewer);
 
-//    for (int i = 0; i < 10; i++) {
-//        double a = 1.0, b = 5.0;
-//        std::cout << "Random double between " << a << " and " << b << ": "
-//                  << GetRandomDouble(a, b) << std::endl;
-//    }
-
 
 //    Mesh *cuboid = MeshCreator::CreateCuboid(Eigen::Vector3d(2, 3, 4));
     Mesh *bunny = new Mesh("../data/bunny.obj");
 
-//    bunny->Transform(GetRotationMatrix(Eigen::Vector3d(1, 0, 0), M_PI_2));
-//    bunny->Transform(GetScalingMatrix(10));
+    bunny->Transform(GetScalingMatrix(10));
+    bunny->CenterMoveToOrigin();
 //    bunny->GetConvexHull();
 //    bunny = MeshCreator::CreateCylinder(2, 0.5, 200);
 //    bunny = MeshCreator::CreateCylinder(Eigen::Vector3d(1, 1, 1), Eigen::Vector3d(2, 2, 2), 1, 6);
@@ -59,32 +50,20 @@ int main(int argc, char *argv[]) {
 //    Mesh *s2 = MeshCreator::CreateSphere(Eigen::Vector3d(3, 0, 0), 1, 50);
 //
 //    s1 = MeshBoolean::MeshConnect(s1, s2);
-//    std::cout<<s1->faceM.array()+200<<std::endl;
-
-
 
     std::vector<igl::opengl::ViewerData> DataList;
     igl::opengl::ViewerData data;
-    data.set_mesh(bunny->verM, bunny->faceM);
+    data.set_mesh(bunny->VerM, bunny->FaceM);
     data.show_lines = false;
     data.face_based = true;
     data.double_sided = false;
     DataList.emplace_back(data);
-
-//    std::cout<<Eigen::Vector3d::Ones()<<std::endl;
 
 //    data.set_mesh(s2->verM, s2->faceM);
 //    data.show_lines = true;
 //    data.face_based = true;
 //    data.set_colors(Eigen::RowVector3d(0.86, 0.62, 0.86));
 //    DataList.emplace_back(data);
-
-
-
-
-
-
-//    std::cout<<FLT_MIN<<std::endl;
 
     /// Render Scene
     renderMgr.RenderScene(viewer, DataList);
@@ -106,7 +85,7 @@ int main(int argc, char *argv[]) {
     };
 
     viewer.callback_key_down = &key_down;
-    viewer.launch(false, "Libigl Example", menuMgr.window_width, menuMgr.window_height);
+    viewer.launch(false, "Libigl Example", menuMgr.WindowWidth, menuMgr.WindowHeight);
     return 0;
 }
 

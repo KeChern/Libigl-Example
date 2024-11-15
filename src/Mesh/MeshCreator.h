@@ -36,6 +36,9 @@ public:
     static Mesh* CreateCone(const Eigen::Vector3d &baseCenter, const Eigen::Vector3d &apexPoint, double radius, int radSamp);
     static Mesh* CreateCone(double length, double radius, int radSamp);
 
+    /// Rectangular surface
+    static Mesh* CreateRectangularSurface(const std::vector<Eigen::Vector3d> &verList, int rows, int cols);
+
     /// 3D curve
     static Mesh* Create3DCurve(const std::vector<Eigen::Vector3d> &ptList, double radius, int radSamp, const std::string &type);
 };

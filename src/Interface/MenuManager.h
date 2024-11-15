@@ -18,8 +18,8 @@
 class MenuManager {
 public:
     /// Global Variables
-    int window_width = 1600;
-    int window_height = 1200;
+    int WindowWidth = 1600;
+    int WindowHeight = 1200;
 
     int frame = 0;
     int AnimateSpeed = 1;
